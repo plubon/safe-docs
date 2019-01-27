@@ -1,0 +1,180 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Welcome to SAFE’s documentation! &#8212; SAFE 0.0.4 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-safe-s-documentation">
+<h1>Welcome to SAFE’s documentation!<a class="headerlink" href="#welcome-to-safe-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-SafeTransformer"></span><dl class="class">
+<dt id="SafeTransformer.SafeTransformer">
+<em class="property">class </em><code class="descclassname">SafeTransformer.</code><code class="descname">SafeTransformer</code><span class="sig-paren">(</span><em>model</em>, <em>penalty=3</em>, <em>pelt_model='l2'</em>, <em>model_params={}</em><span class="sig-paren">)</span><a class="headerlink" href="#SafeTransformer.SafeTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform dataset using outputs of complex model. Safe detects which values of variable strongly influence predctions
+and transforms variable into a new, discrete, with each level corresponding to values for which the reponses of surrogate
+model are similiar. Such variables can be fed to another, interpretable model to obtain enchanced predictions compared to using
+standard dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> – Surrogate model. If model is not fitted, y parameter must be passed to fit method. Regression models should implement predict method, whileclassification models should implement predict_proba for getting predictions. If predict_proba  methode exists model is assumed to be a classification model</li>
+<li><strong>penalty</strong> – Penalty corresponding to adding a new changepoint. The higher the value of penalty the smaller nunber of levels of transformed variableswill be created (Default value = 3)</li>
+<li><strong>pelt_model</strong> – Cost function used in pelt algorith, possible values: ‘l2’, ‘l1’, ‘rbf’ (Default value = ‘l2’)</li>
+<li><strong>model_params</strong> – Dictionary of paramters passed to fit method of surrogate model. Only used if passed surrogate model is not alreedy fitted.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="SafeTransformer.SafeTransformer.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#SafeTransformer.SafeTransformer.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the transformer. For continous variables intervals for which reponse of surrogate models does not vary are found. For categorical variables average reponses foreach level are found, and then levels with similiar reponse leveles are marked for merging.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> – A pandas data frame of predictors. Columns of dtypes category and object are assumed to be categorical variables, while other columns will be treatedas continous variables</li>
+<li><strong>y</strong> – A vector of response. Only used if passed surrogate model is not already fitted to fit the surrogate model.(Default value = None)</li>
+<li><strong>verbose</strong> – If true logs will be printed.(Default value = False)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="SafeTransformer.SafeTransformer.summary">
+<code class="descname">summary</code><span class="sig-paren">(</span><em>variable_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#SafeTransformer.SafeTransformer.summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes how variables were transformed in human readable way. For continous variables intervals corresponding to levels of newly created categorical variable are printed.For categorical variables information about which levels were merged is shown.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable_name</strong> – If None summary for all variables will be printed. Otherwise summary will be shown only for the selected variable.  (Default value = None)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="SafeTransformer.SafeTransformer.transform">
+<code class="descname">transform</code><span class="sig-paren">(</span><em>X</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#SafeTransformer.SafeTransformer.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms a data frame of predictors. Continous variables are transformed into a discrete variable, with each level corresponding to an interval of originalvariable for which reponses of surrogate model did not vary. For categorical variables levels with similiar model response will be merged into one new level.All variable are one-hot encoded in p-1 columns where p is the number of levels (first level is represented by having zeros in each column).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> – A pandas date frame to be transformed. Should have the same columns as the one passed  to fit.</li>
+<li><strong>verbose</strong> – If true logs will be printed.(Default value = False)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">SAFE</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Aleksandra Gacek, Piotr Luboń.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
